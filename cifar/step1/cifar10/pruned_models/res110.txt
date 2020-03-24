@@ -1,0 +1,4 @@
+Number of parameters: 
+1168424
+Test accuracy: 
+0.3612
