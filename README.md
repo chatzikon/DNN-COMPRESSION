@@ -12,3 +12,14 @@ The cifar folder contains the files required to make the experiments using the c
 *Step3*: The main_finedune_dimen_loss function is used to fine-tune a model using only the final MSE loss and the main_finedune_dimen_mult_loss function to fine-tune using multiple auxiliary MSE losses.
 
 *Step4*: Further fine-tune without auxiliary MSE losses using either main_finetune function for a pruned model (compression approach A1) or main_finetune__model_decomposed for a decomposed model (A2) or a pruned+decomposed model (A3).
+
+**ILSCVR**:
+
+*Step1*: P1 strategy is employed for pruning, using the *_normality_imagenet file.
+
+*Step2*: The *compression_conv_fc* is used to apply the HOOI to models and the load utils to choose the desired network to decompose
+
+*Step3*: The main_finedune_dimen_loss function is used to fine-tune a model using only the final MSE loss (due to resource constraints,  multiple auxiliary MSE losses were not used during the ILSCVR fine-tuning
+
+*Step4*: Further fine-tune without auxiliary MSE losses using either main_finetune function for a pruned model (compression approach A1) or main_finetune__model_decomposed for a decomposed model (A2) or a pruned+decomposed model (A3).
+
