@@ -100,9 +100,11 @@ acc,_= test(model,test_loader)
 layer_id = 1
 cfg = []
 cfg_mask = []
-factor=2.4
+coef=2.4
 count=0
 temp=0
+
+#decide how many and which filters to prune at each layer
 
 for m in model.modules():
     if isinstance(m, nn.Conv2d):
@@ -125,7 +127,7 @@ for m in model.modules():
             weight_copy = m.weight.data.clone().cpu().numpy()
             a=weight_copy.flatten()
             W, p = stats.shapiro(a)
-            prune_prob_stage = np.ceil(10 * (W - 0.3) / (factor * 0.7)) / 10
+            prune_prob_stage = np.ceil(10 * (W - 0.3) / (coef * 0.7)) / 10
 
             if args.metric == 'l1norm':
 
@@ -222,6 +224,9 @@ for m in model.modules():
 newmodel=models.mobilenetv2.MobileNetV2(num_classes=10,cfg=cfg)
 if args.cuda:
     newmodel.cuda()
+
+
+#transfer weights from the pretrained network to the pruned one
 
 start_mask = torch.ones(3)
 layer_id_in_cfg = 0

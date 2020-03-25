@@ -231,7 +231,6 @@ def main():
     for epoch in range(args.start_epoch, args.epochs):
         start_time = time.time()
         train(model, optimizer, train_loader, epoch)
-        scheduler.step(epoch)
         print('learning rate')
         print(optimizer.param_groups[0]['lr'])
         prec1,_ = test(model,valid_loader)

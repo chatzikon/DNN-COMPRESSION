@@ -101,6 +101,7 @@ def test(model,test_loader):
 
 acc,_= test(model,test_loader)
 
+#The pruning strategy (layer sensitivity) of the paper "Pruning for efficient convnets is used
 
 skip = {
     'A': [16, 20, 38, 54],
@@ -118,6 +119,7 @@ layer_id = 1
 cfg = []
 cfg_mask = []
 
+#decide how many and which filters to prune at each layer
 
 
 for m in model.modules():
@@ -128,6 +130,7 @@ for m in model.modules():
             cfg.append(out_channels)
             layer_id += 1
             continue
+        # prune only the first convolutional layer of each residual block
         if layer_id % 2 == 0:
             if layer_id <= 18:
                 stage = 0
@@ -221,6 +224,10 @@ for m in model.modules():
 newmodel = resnet(dataset=args.dataset, depth=args.depth, cfg=cfg)
 if args.cuda:
      newmodel.cuda()
+
+
+#transfer weights from the pretrained network to the pruned one
+
 
 start_mask = torch.ones(3)
 layer_id_in_cfg = 0

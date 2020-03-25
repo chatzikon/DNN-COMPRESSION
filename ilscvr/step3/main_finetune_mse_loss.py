@@ -63,14 +63,6 @@ parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true',
                     help='evaluate model on validation set')
 parser.add_argument('--pretrained', dest='pretrained', action='store_true',
                     help='use pre-trained model')
-parser.add_argument('--world-size', default=1, type=int,
-                    help='number of distributed processes')
-parser.add_argument('--dist-url', default='tcp://224.66.41.62:23456', type=str,
-                    help='url used to set up distributed training')
-parser.add_argument('--dist-backend', default='gloo', type=str,
-                    help='distributed backend')
-parser.add_argument('--s', type=float, default=0,
-                    help='scale sparse rate (default: 0)')
 parser.add_argument('--save', default='./logs', type=str, metavar='PATH',
                     help='path to save prune model (default: current directory)')
 parser.add_argument('--refine', default='', type=str, metavar='PATH',
@@ -102,15 +94,6 @@ def main():
 
 
     model.cuda()
-
-
-
-
-
-
-
-
-
 
 
     criterion = nn.CrossEntropyLoss().cuda()
@@ -195,7 +178,7 @@ def main():
 
     history_score = np.zeros((args.epochs + 1, 1))
     np.savetxt(os.path.join(args.save, 'record.txt'), history_score, fmt = '%10.5f', delimiter=',')
-    for epoch in range(args.start_epoch, args.start_epoch+15):
+    for epoch in range(args.start_epoch, args.epochs):
 
         print('LR')
         print(optimizer.param_groups[0]['lr'])
@@ -357,11 +340,7 @@ class AverageMeter(object):
         self.count += n
         self.avg = self.sum / self.count
 
-def adjust_learning_rate(optimizer, epoch):
-    """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
-    lr = args.lr * (0.1 ** (epoch // 30))
-    for param_group in optimizer.param_groups:
-        param_group['lr'] = lr
+
 
 def accuracy(output, target, topk=(1,)):
     """Computes the precision@k for the specified values of k"""

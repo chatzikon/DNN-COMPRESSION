@@ -22,7 +22,6 @@ os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 import sys
 sys.path.append('../step1')
-from mobilenetv2_imagenet import mobilenet_v2
 
 
 
@@ -63,14 +62,6 @@ parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true',
                     help='evaluate model on validation set')
 parser.add_argument('--pretrained', dest='pretrained', action='store_true',
                     help='use pre-trained model')
-parser.add_argument('--world-size', default=1, type=int,
-                    help='number of distributed processes')
-parser.add_argument('--dist-url', default='tcp://224.66.41.62:23456', type=str,
-                    help='url used to set up distributed training')
-parser.add_argument('--dist-backend', default='gloo', type=str,
-                    help='distributed backend')
-parser.add_argument('--s', type=float, default=0,
-                    help='scale sparse rate (default: 0)')
 parser.add_argument('--save', default='./logs', type=str, metavar='PATH',
                     help='path to save prune model (default: current directory)')
 parser.add_argument('--refine', default='', type=str, metavar='PATH',
@@ -78,7 +69,7 @@ parser.add_argument('--refine', default='', type=str, metavar='PATH',
 
 best_prec1 = 0
 
-def main(mse_loss,saved_out):
+def main():
     global args, best_prec1
     args = parser.parse_args()
 
@@ -93,18 +84,11 @@ def main(mse_loss,saved_out):
 
 
 
-    if args.refine:
-        checkpoint = torch.load(args.refine)
-        model=mobilenet_v2(inverted_residual_setting=checkpoint['cfg'])
-        model.load_state_dict(checkpoint['state_dict'])
 
-    model = mobilenet_v2()
+    model = torch.load(args.refine)
 
-
-    model.cuda()
-
-
-
+    # sometimes there is a problem with AvgPool2d of the loaded model, if this problem occur, uncomment this line
+    # model.avgpool = nn.AvgPool2d(kernel_size=8, stride=8, padding=0)
 
 
 
@@ -183,40 +167,6 @@ def main(mse_loss,saved_out):
 
 
 
-
-
-
-
-    #load of the pretreained baseline model
-    model_init = models.mobilenet_v2(pretrained=True)
-    model_init.cuda()
-    output1 = np.zeros((len(valid_loader.sampler) + len(train_loader.sampler), 1000))
-
-    #the path where the outputs of the MSE loss layers of the baseline NN are saved(this is a time consuming process at ILSCVR dataset so it is made once and
-    #its output is saved
-    save_path = '/.output.npy'
-
-
-    #if the required outputs of the baseline network are saved, saved_out=True
-    #if saved_out=False, those outputs are extracted
-    if saved_out == False:
-
-      output, inds = test_orig(model_init, train_loader)
-
-
-
-
-
-      for i in range(len(inds)):
-         output1[inds[i], :] = output[i, :]
-
-
-      np.save(save_path,output1)
-    else:
-        output1=np.load(save_path)
-
-
-
     #evaluate the model
     if args.evaluate:
         begin = time.time()
@@ -230,14 +180,14 @@ def main(mse_loss,saved_out):
 
     history_score = np.zeros((args.epochs + 1, 1))
     np.savetxt(os.path.join(args.save, 'record.txt'), history_score, fmt = '%10.5f', delimiter=',')
-    for epoch in range(args.start_epoch, args.start_epoch+15):
+    for epoch in range(args.start_epoch, args.epochs):
 
         print('LR')
         print(optimizer.param_groups[0]['lr'])
 
 
         # train for one epoch
-        train(train_loader, model,  optimizer, epoch,output1,mse_factor)
+        train(train_loader, model,  optimizer, epoch,output1)
 
         # evaluate on validation set
         prec1 = validate(valid_loader, model, criterion)
@@ -266,7 +216,7 @@ def main(mse_loss,saved_out):
     history_score[-1] = best_prec1
     np.savetxt(os.path.join(args.save, 'record.txt'), history_score, fmt = '%10.5f', delimiter=',')
 
-def train(train_loader, model,  optimizer, epoch,output1,mse_factor):
+def train(train_loader, model,  optimizer, epoch):
     batch_time = AverageMeter()
     data_time = AverageMeter()
     losses = AverageMeter()
@@ -287,11 +237,10 @@ def train(train_loader, model,  optimizer, epoch,output1,mse_factor):
 
         # compute output
         output = model(input_var.cuda())
-        output_temp = torch.from_numpy(output1[index.cpu().numpy(), :]).float().cuda()
 
 
 
-        loss =  F.cross_entropy(output, target).cuda()+mse_factor*F.mse_loss(output,output_temp).cuda()
+        loss =  F.cross_entropy(output, target).cuda()
 
         # measure accuracy and record loss
         prec1, prec5 = accuracy(output.data, target, topk=(1, 5))
@@ -320,28 +269,6 @@ def train(train_loader, model,  optimizer, epoch,output1,mse_factor):
                    data_time=data_time, loss=losses, top1=top1, top5=top5))
 
 
-def test_orig(model,test_loader):
-    model.eval()
-    output=np.zeros((len(test_loader.sampler),1000))
-    inds=np.zeros((len(test_loader.sampler),),dtype=int)
-
-
-    k=0
-
-    for i, (datat, target,index) in enumerate(test_loader):
-        with torch.no_grad():
-            input_var = torch.autograd.Variable(datat)
-            b=model(input_var.cuda())
-            output[k:k+datat.shape[0],:]=b.data.cpu().numpy()
-            inds[k:k+datat.shape[0]]=index.cpu().numpy()
-            k=k+datat.shape[0]
-
-            if i % args.print_freq == 0:
-                print('Test: [{0}/{1}]\t'.format(i, len(test_loader)))
-
-
-
-    return output,inds
 
 
 def validate(val_loader, model, criterion):
@@ -414,11 +341,6 @@ class AverageMeter(object):
         self.count += n
         self.avg = self.sum / self.count
 
-def adjust_learning_rate(optimizer, epoch):
-    """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
-    lr = args.lr * (0.1 ** (epoch // 30))
-    for param_group in optimizer.param_groups:
-        param_group['lr'] = lr
 
 def accuracy(output, target, topk=(1,)):
     """Computes the precision@k for the specified values of k"""
@@ -438,6 +360,4 @@ def accuracy(output, target, topk=(1,)):
 if __name__ == '__main__':
 
 
-    mse_loss=0.5
-    saved_out=False
-    main(mse_loss,saved_out)
+    main()

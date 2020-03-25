@@ -104,14 +104,17 @@ acc,_= test(model,test_loader)
 layer_id = 1
 cfg = []
 cfg_mask = []
-factor=3.7
+coef=3.7
 layer=1
+
+#decide how many and which filters to prune at each layer
 
 
 for m in model.modules():
     if isinstance(m, nn.Conv2d):
         out_channels = m.weight.data.shape[0]
 
+        #prune only the first convolutional layer of each residual block
         if layer_id % 2 == 0:
 
             weight_copy = m.weight.data.clone().cpu().numpy()
@@ -121,17 +124,17 @@ for m in model.modules():
 
             if args.strategy=='P1':
                 W, p = stats.shapiro(a)
-                prune_prob_stage = np.ceil(10 * (W - 0.905) / (factor * 0.095)) / 10
+                prune_prob_stage = np.ceil(10 * (W - 0.905) / (coef * 0.095)) / 10
             elif args.strategy == 'P2':
                 jb, p = stats.jarque_bera(a)
                 #smoothing technique in order to smooth the range value
                 W=1-np.log10(jb)/(4.2)
-                prune_prob_stage = np.ceil(10 * (2 * W - 0.01) / (factor * 0.72)) / 10
+                prune_prob_stage = np.ceil(10 * (2 * W - 0.01) / (coef * 0.72)) / 10
             elif args.strategy=='P3':
                 k34 = stats.kstat(a, 4) * stats.kstat(a, 3)
                 # smoothing technique in order to smooth the range value
                 W = np.log10(np.power(10, 13) * np.abs(k34)) / (2 * 10.5)
-                prune_prob_stage = np.ceil(10 * (W - 0.03) / (factor * 0.46)) / 10
+                prune_prob_stage = np.ceil(10 * (W - 0.03) / (coef * 0.46)) / 10
 
 
 
@@ -225,6 +228,10 @@ for m in model.modules():
 newmodel = resnet(dataset=args.dataset, depth=args.depth, cfg=cfg)
 if args.cuda:
     newmodel.cuda()
+
+
+#transfer weights from the pretrained network to the pruned one
+
 
 start_mask = torch.ones(3)
 layer_id_in_cfg = 0

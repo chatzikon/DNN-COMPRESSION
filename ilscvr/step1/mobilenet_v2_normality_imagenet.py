@@ -146,12 +146,13 @@ class AverageMeter(object):
 
 
 
+#decide how many and which filters to prune at each layer
 
 
 layer_id = 1
 cfg = []
 cfg_mask = []
-factor=1.996
+coef=1.996
 count=0
 for m in model.modules():
     if isinstance(m, nn.Conv2d):
@@ -182,7 +183,7 @@ for m in model.modules():
             weight_copy = m.weight.data.clone().cpu().numpy()
             a=weight_copy.flatten()
             W, p = stats.shapiro(a)
-            prune_prob_stage = np.ceil(10 * (W - 0.78) / (factor * 0.22)) / 10
+            prune_prob_stage = np.ceil(10 * (W - 0.78) / (coef * 0.22)) / 10
 
 
             if args.metric == 'l1norm':
@@ -281,6 +282,9 @@ for m in model.modules():
 assert len(cfg) == 34, "Length of cfg variable is not correct."
 
 newmodel=mobilenet_v2(inverted_residual_setting=cfg)
+
+
+#transfer weights from the pretrained network to the pruned one
 
 
 start_mask = torch.ones(3)

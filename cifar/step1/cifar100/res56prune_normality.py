@@ -103,10 +103,13 @@ def test(model,test_loader):
 acc,_= test(model,test_loader)
 
 
+#decide how many and which filters to prune at each layer
+
+
 layer_id = 1
 cfg = []
 cfg_mask = []
-factor=8.7
+coef=8.7
 layer=1
 
 
@@ -122,7 +125,7 @@ for m in model.modules():
 
 
             W, p = stats.shapiro(a)
-            prune_prob_stage = np.ceil(10 * (W - 0.75) / (factor * 0.2)) / 10
+            prune_prob_stage = np.ceil(10 * (W - 0.75) / (coef* 0.2)) / 10
 
 
 
@@ -217,6 +220,10 @@ for m in model.modules():
 newmodel = resnet(dataset=args.dataset, depth=args.depth, cfg=cfg)
 if args.cuda:
     newmodel.cuda()
+
+
+#transfer weights from the pretrained network to the pruned one
+
 
 start_mask = torch.ones(3)
 layer_id_in_cfg = 0

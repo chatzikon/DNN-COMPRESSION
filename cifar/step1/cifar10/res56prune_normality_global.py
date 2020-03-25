@@ -147,6 +147,7 @@ layer_id=1
 for k, m in enumerate(model.modules()):
     if isinstance(m, nn.Conv2d):
         out_channels = m.weight.data.shape[0]
+        # prune only the first convolutional layer of each residual block
         if layer_id % 2 == 0:
             num_keep=0
             weight_copy1 = m.weight.data.clone().cpu().numpy()
@@ -168,6 +169,11 @@ for k, m in enumerate(model.modules()):
 newmodel = resnet(dataset=args.dataset, depth=args.depth, cfg=cfg)
 if args.cuda:
     newmodel.cuda()
+
+
+
+#transfer weights from the pretrained network to the pruned one
+
 
 start_mask = torch.ones(3)
 layer_id_in_cfg = 0

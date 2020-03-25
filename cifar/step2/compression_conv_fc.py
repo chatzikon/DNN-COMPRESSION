@@ -111,7 +111,7 @@ decomposition_conv = 'tucker2'
 
 WEAKEN_FACTOR = None
 
-#X_FACTOR used:
+#X_FACTOR used (how much each layer will be compressed):
 # res56_c10: 2.32
 # res56_c100: 1.587
 # res56_c10: 1.71

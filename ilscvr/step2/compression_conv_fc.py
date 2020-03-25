@@ -73,7 +73,7 @@ n_layers_bn = len(layer_names_bn)
 decomposition_conv = 'tucker2'
 
 
-
+#X_FACTOR used (how much each layer will be compressed):
 WEAKEN_FACTOR = None
 X_FACTOR = 1.71
 rank_selection_suffix = "{}x".format(X_FACTOR)
