@@ -1,5 +1,5 @@
-### About this repo
--------------------
+## About this repo
+
 
 This repo includes the training and evaluation scripts of the paper : **Neural Network Compression Using Higher-Order Statistics and Auxiliary Reconstruction Losses** (to appear in CVPR workshop: Joint Workshop on Efficient Deep Learning in Computer Vision). 
 
