@@ -26,7 +26,7 @@ The cifar folder contains the files required to make the experiments using the c
 
 **Step1**: In order to prune using P1,P2,P3 pruning strategy, use *_prune_normality files, *_global files are for P4 and *prune are for P5. The Tvalue calculation is employed to extract Tmin and Tmax of each network (eq 9)
 
-**Step2**: The *compression_conv_fc* is used to apply the HOOI to models and the load utils to choose the desired network to decompose
+**Step2**: The compression_conv_fc is used to apply the HOOI to models and the load utils to choose the desired network to decompose
 
 **Step3**: The main_finedune_mse_loss function is used to fine-tune a model using only the final MSE loss and the main_finedune_mult_losses function to fine-tune using multiple auxiliary MSE losses.
 
@@ -36,7 +36,7 @@ The cifar folder contains the files required to make the experiments using the c
 
 **Step1**: P1 strategy is employed for pruning, using the *_normality_imagenet file.
 
-**Step2**: The *compression_conv_fc* is used to apply the HOOI to models and the load utils to choose the desired network to decompose
+**Step2**: The compression_conv_fc is used to apply the HOOI to models and the load utils to choose the desired network to decompose
 
 **Step3**: The main_finedune_mse_loss function is used to fine-tune a model using only the final MSE loss (due to resource constraints,  multiple auxiliary MSE losses were not used during the ILSCVR fine-tuning
 
