@@ -22,7 +22,7 @@ The code has been testing with the following setup:
 
 The cifar folder contains the files required to make the experiments using the cifar10 and cifar100 dataset and the folder ilscvr the files required to make the experiments using the ILSCVR-12 dataset. There are pretrained models at the respective folder. 
 
-### CIFAR: 
+### CIFAR 
 
 **Step1**: In order to prune using P1,P2,P3 pruning strategy, use *_prune_normality files, *_global files are for P4 and *prune are for P5. The Tvalue calculation is employed to extract Tmin and Tmax of each network (eq 9)
 
@@ -32,7 +32,7 @@ The cifar folder contains the files required to make the experiments using the c
 
 **Step4**: Further fine-tune without auxiliary MSE losses using either main_finetune function for a pruned model (compression approach A1) or main_finetune_model_decomposed for a decomposed model (A2) or a pruned+decomposed model (A3).
 
-### ILSCVR**:
+### ILSCVR
 
 **Step1**: P1 strategy is employed for pruning, using the *_normality_imagenet file.
 
