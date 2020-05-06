@@ -7,14 +7,16 @@ This repo includes the training and evaluation scripts of the paper : **Neural N
 
 The code has been testing with the following setup:
 
-..* Pytorch 1.3
-..* Python 3.5
-..* CUDA 10.2 
+* Pytorch 1.3
+* Python 3.5
+* CUDA 10.2 
 
 
 # Model Architecture
 
-![model architecture image](https://github.com/chatzikon/DNN-COMPRESSION/blob/master/asset/method.png)
+![model architecture image](https://github.com/chatzikon/DNN-COMPRESSION/blob/master/assets/method.png)
+
+
 
 
 
