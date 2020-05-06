@@ -2,13 +2,15 @@
 
 This repo includes the training and evaluation scripts of the paper : **Neural Network Compression Using Higher-Order Statistics and Auxiliary Reconstruction Losses** (to appear in CVPR workshop: Joint Workshop on Efficient Deep Learning in Computer Vision). 
 
+
 # Installation
 
-..*.The code has been testing with the following setup:
+The code has been testing with the following setup:
 
-1. Pytorch 1.3
-2. Python 3.5
-3. CUDA 10.2 
+..* Pytorch 1.3
+..* Python 3.5
+..* CUDA 10.2 
+
 
 # Model Architecture
 
