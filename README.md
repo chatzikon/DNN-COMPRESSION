@@ -16,9 +16,9 @@ The code has been testing with the following setup:
 
 ![model architecture image](https://github.com/chatzikon/DNN-COMPRESSION/blob/master/assets/method.png)
 
+**Outline of the proposed method**: Initially, the HOS metrics are calculated for the filters of layer L and the least discriminant filters are removed. Corresponding layer outputs and kernels in the subsequent layer are also pruned. Afterwards, the HOOI algorithm is applied to the convolutional kernels. The initial convolutional kerners are replaced with three smaller ones. The next step is the fine-tuning of the DNN, employing auxiliary MSE losses at the output of the network and after some intermediate layers. Finally, the DNN is fine-tuned without the usage of the aforementioned losses.
 
-
-
+#Train
 
 The cifar folder contains the files required to make the experiments using the cifar10 and cifar100 dataset and the folder ilscvr the files required to make the experiments using the ILSCVR-12 dataset. There are pretrained models at the respective folder. 
 
