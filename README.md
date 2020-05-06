@@ -42,3 +42,6 @@ The cifar folder contains the files required to make the experiments using the c
 
 **Step4**: Further fine-tune without auxiliary MSE losses using either main_finetune function for a pruned model (compression approach A1) or main_finetune_model_decomposed for a decomposed model (A2) or a pruned+decomposed model (A3).
 
+#Acknowledgements
+Code borrowed from: [rethinking network pruning](https://github.com/Eric-mingjie/rethinking-network-pruning), [MUSCO](https://github.com/musco-ai/musco-pytorch) and [DCP] (https://github.com/SCUT-AILab/DCP)
+
