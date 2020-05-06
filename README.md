@@ -1,5 +1,7 @@
-# DNN-COMPRESSION
-This is the github of the paper : Neural Network Compression Using Higher-Order Statistics and Auxiliary Reconstruction Losses
+#H1 DNN-COMPRESSION
+This repo includes the training and evaluation scripts of the paper : **Neural Network Compression Using Higher-Order Statistics and Auxiliary Reconstruction Losses** (to appear in CVPR workshop: Joint Workshop on Efficient Deep Learning in Computer Vision). 
+
+
 
 The cifar folder contains the files required to make the experiments using the cifar10 and cifar100 dataset and the folder ilscvr the files required to make the experiments using the ILSCVR-12 dataset. There are pretrained models at the respective folder. 
 
