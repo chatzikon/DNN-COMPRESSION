@@ -45,3 +45,6 @@ The cifar folder contains the files required to make the experiments using the c
 # Acknowledgements
 Code from [rethinking network pruning](https://github.com/Eric-mingjie/rethinking-network-pruning), [MUSCO](https://github.com/musco-ai/musco-pytorch) and [DCP](https://github.com/SCUT-AILab/DCP) was used.
 
+# License
+Our code is released under MIT License (see LICENSE file for details)
+
