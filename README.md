@@ -5,7 +5,7 @@ This repo includes the training and evaluation scripts of the paper : **Neural N
 
 # Installation
 
-The code has been testing with the following setup:
+The code has been tested with the following setup:
 
 * Pytorch 1.3
 * Python 3.5
